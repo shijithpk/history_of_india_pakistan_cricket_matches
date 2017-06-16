@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+
+<head>
+
+<!-- This visualisation mainly makes use of Adam Pearce's graph-scroll.js and a d3 block from https://bl.ocks.org/SpaceActuary/d6b5ca8e5fb17842d652d0de21e88a05 . Various other code snippets from stackoverflow have been used, have mentioned their urls . -->
+
+<script type="text/javascript">
+    (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+            (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date(); a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+    ga('create', 'UA-78400808-1', 'auto');
+        ga('send', 'pageview');
+</script>
+
+<!-- for Facebook -->          
+<meta property="og:title" content="INTERACTIVE: THE HISTORY OF INDIA-PAKISTAN CRICKET MATCHES...IN DOTS" />
+<meta property="og:type" content="article" />
+<meta property="og:image" content="XXXXXXXXXXXXXXXXXXXXXXXX" />
+<meta property="og:image:type" content="image/gif" />
+<meta property="og:description" content="With India facing Pakistan in the Champions Trophy final, here's a visualisation to help you make sense of this fractious encounter and its history." />
+
+<!-- PUT IN AUTHOR NAME HERE SOMEWHERE -->
+
+<!-- for Twitter -->          
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="INTERACTIVE: THE HISTORY OF INDIA-PAKISTAN CRICKET MATCHES...IN DOTS" />
+<meta name="twitter:description" content="With India facing Pakistan in the Champions Trophy final, here's a visualisation to help you make sense of this fractious encounter and its history." />
+<meta name="twitter:image" content="http://i.imgur.com/v8SfKIC.png" />
+
+<style>
+
+@import url(https://fonts.googleapis.com/css?family=Khula:400,700);
+
+body{
+  background: #ffda29;
+  max-width: 900px;
+  margin: 0px auto;
+  font-family: 'Khula', sans-serif;
+  color:#4f4f4f;
+}
+
+#container{
+  position: relative;
+}
+
+#sections{
+  width: 340px;
+}
+
+#sections > div{
+  opacity: .2;
+  margin-bottom: 300px;
+}
+
+#sections > div:last-child{
+  margin-bottom: 50px; 
+}
+
+#sections > div.graph-scroll-active{
+  opacity: 1;
+}
+
+#graph{
+  margin-left: 40px;
+  width: 500px;
+  position: absolute;
+  top: 0px;
+  margin-left: 380px;
+}
+
+.graph-scroll-fixed #graph{
+  position: fixed;
+  top: 0px;
+}
+
+.graph-scroll-below #graph{
+  bottom: 0px;
+  top: auto;
+}
+
+@media (max-width: 925px)  {
+  #graph{
+    width: 100%;
+    transform: translate(-50%, 0);
+    margin-left: 50%;
+  }
+
+  #sections{
+    position: relative;
+    margin: 0px auto;
+    padding-top: 400px;
+  }
+
+  #sections div{
+    background: rgba(255,218,41,0.9); /* alpha parameter */
+    padding: 10px;
+    /* border: 1px solid; */
+    max-width: 400px;
+    margin-bottom: 500px;
+  }
+}
+
+h1{
+  margin: 50px;
+}
+
+h1, h3{
+  text-align: center;
+}
+
+/*
+svg{
+border: 1px solid black;
+}
+*/
+
+text {
+  font-family: 'Khula', sans-serif;
+        font-size: 14px;
+        fill: #4f4f4f;
+        font-weight: bold;
+    }
+
+text.footnote{
+          font-size:12px;
+          font-weight: normal;
+     }
+
+text.value {
+        fill: #ffda29;
+        opacity:1;
+    }
+
+text.title {
+          font-size:16px;
+          font-weight: bold;
+          line-height:20px;
+    }
+
+a { 
+  color: #4f4f4f;
+}
+
+</style>
+
+</head>
+
+<body>
+
+    <h1>INTERACTIVE: THE HISTORY OF INDIA-PAKISTAN CRICKET MATCHES...IN DOTS</h1>
+    <p>India will face Pakistan in the Champions Trophy final on Sunday, the 134th time the two will have played each other. The teams have met each other once already in the group stage, when India defeated its arch-rival heavily by 124 runs. So what happened in the 132 other One-day matches they've played since 1978? This visualisation helps you make sense of this fractious encounter and its history.</p>
+    <h3>&dArr; SCROLL DOWN TO BEGIN  &dArr;</h3>
+
+<div id='container'>
+<div id='graph'></div>
+  <div id='sections'>
+    
+    <!-- SEC 1 -->
+        <div><p>Each dot in the chart represents a match played between the two countries. (If you're viewing this on the desktop, you can hover over a dot to get a summary of the match.) <img src="graphics/pak_min.png" style="width:14px;height:14px;"> represents a match won by Pakistan, <img src="graphics/ind_min.png" style="width:14px;height:14px;"> a match won by India and <img src="graphics/no_min.png" style="width:14px;height:14px;"> stands for a match that was abandoned or cancelled.</p></div>
+
+    <!-- SEC 2 -->
+        <div><p><p style="font-weight:bold;text-align:center;">Pakistan's won more</p>India first played Pakistan in a one-day international on October 1, 1978 in Quetta, Pakistan. India may have won that match by four runs, but since then Pakistan has won the majority of matches, 72 out of 133 or 54%.</p></div>
+
+    <!-- SEC 3 -->
+        <div><p><p style="font-weight:bold;text-align:center;">Pakistan's dominance is waning though</p>Each of the 'blobs' in the chart represents matches played in a five-year period. We can see from the chart that Pakistan dominated till the mid-2000s, after which the tide started to turn in India's favour.</p></div>
+
+    <!-- SEC 4 -->
+        <div><p style="font-weight:bold;text-align:center;">They love playing matches abroad</p><p>74 out of the 133 One-day matches between the two, or 55%, have been played outside India and Pakistan. They've played each other 26 times in the UAE and also, interestingly, 16 times in Canada. This happened from 1996-98 when Toronto hosted an annual one-day series between the two countries.</p></div>
+    
+    <!-- SEC 5 -->
+        <div><p style="font-weight:bold;text-align:center;">It pays to bat first</p><p>In the 133 matches played between India and Pakistan, the team batting first has won more matches -- 66 -- than the team bowling first -- 58. There have been just two matches in England played between the two countries (including the group-stage encounter) and both were won by the team batting first.</p></div>
+
+    <!-- SEC 6 -->
+        <div><p style="font-weight:bold;text-align:center;">These matches are tight!</p><p>This chart looks at the margin of victory, ie. how many runs or wickets teams have won by. If a country wins an India-Pakistan match batting first, it usually wins by less than 50 runs!</p></div>
+
+  </div>
+
+</div>
+
+<!-- PUT LINK TO GITHUB REPO BELOW -->
+
+<h3 id='source'><a href='https://github.com/shijithpk/2017_05_10_cricket_toss_viz'>REPLACE LINK: CREDITS, CODE AND DATA</a></h3>
+<center><a href="https://www.wionews.com"><img src="graphics/wion_horizontal.svg" width="200"></a></center>
+
+<script src="scripts/d3v4+jetpack.js"></script> 
+<script src="scripts/graph-scroll.js"></script>
+
+<script>
+
+var oldWidth = 0
+function render(){
+
+  if (oldWidth == innerWidth) return
+  oldWidth = innerWidth 
+
+  var width = d3.select('#graph').node().offsetWidth,
+      height = innerWidth > 925 ? width : innerHeight * 0.9
+      ;     
+      //, 
+      //this sets the graph on mobile at a 7th of the height, while on desktop it'll be a square      
+
+var svg = d3
+            .select('#graph')
+            .html('')
+            .append('svg')
+            .attrs({width: width, height: height})
+            ;
+
+function canvas_clear(){
+
+svg
+    .selectAll("*")
+    .remove();
+}
+
+var radius = 5;
+ 
+var iconsx = {
+  "India":"graphics/ind_min.svg",
+  "Pakistan":"graphics/pak_min.svg",
+  "No result":"graphics/no_min.svg"
+};
+
+
+  //the code is a bit repetitious from this point on, sadly couldn't figure out how to do 
+  //this viz without repeating the code :( . 
+  //Man, I have to start getting better at javascript
+  //couldn't figure out a way to have the same circles moving around between 
+  //charts, the graphic is generated afresh five times ! :( 
+  //may have to look at using D3 with canvas elements for these kinds of graphics
+
+
+function sec_1(){  //all the dots together
+
+      canvas_clear();
+
+      d3.csv("data/ind_pak_v2.csv", function(data){
+
+      data.forEach(function(d){
+        d.r = radius;
+        d.x = width/2;
+        d.y = height/2;
+      })
+      
+      console.table(data); 
+
+      
+var images = svg
+                .selectAll("image")
+                .data(data)
+                ;
+
+//idea for code below from http://bl.ocks.org/syntagmatic/4963194
+
+var imagesEnter = images
+              .enter()
+              .append("image")
+//              .attr("r", function(d, i){ return d.r; })
+              .attr("x", function(d, i){ return 175 + 25 * i + 2 * i ** 2; })
+              .attr("y", function(d, i){ return 250; })
+              .attr("xlink:href",  function(d) { return iconsx[d.winner];})
+              .attr("height", 20)
+              .attr("width", 20)
+              ;
+
+    images = images
+                    .merge(imagesEnter)
+                    ;
+
+    images
+          .append("title")
+          .text(function(d, i) { 
+            if (d.winner != 'No result'){return "One-day match at " + d.ground + " (" + d.country + ") on " + d.date + ". " + d.winner + " won by " + d.margin + ".";}
+            else{return "One-day match at " + d.ground + " (" + d.country + ") on " + d.date + ". Match abandoned/cancelled.";} 
+          });
+                    
+
+      function ticked() {
+                          images
+                              //.attr("x", function(d){ return d.x; })
+                             // .attr("y", function(d){ return d.y; })
+                              .attr("x", function(d){ return d.x = Math.max(d.r, Math.min(width - d.r, d.x)); })
+                             .attr("y", function(d){ return d.y = Math.max(d.r, Math.min(height - d.r, d.y)); })
+                              ;
+                        }
+                        ;   
+
+
+//from http://vallandingham.me/bubble_charts_with_d3v4.html
+//a tick callback method that will draw the nodes after each iteration of the simulation.The ticked function for this is super simple, as it just moves the SVG circles used to make -the bubbles to their new positions
+//we have our bubbles all coalescing together in a big bubble pile. Note that we aren’t using any transitions here. The “animation” is taken care of by the rapid repeated execution of the ticked function
+
+//from http://d3indepth.com/force-layout/
+//Each time the simulation iterates the function ticked will be called. This function joins the nodes array to circle elements and updates their positions
+
+ var simulation = d3
+        .forceSimulation()
+        //keeping the commented lines below in case I need them later
+        // .force("collide",d3.forceCollide( function(d){
+        //    return d.r + 0 }).iterations(16))
+        //d.r is defined as radius above
+        .force("charge", d3.forceManyBody()
+          .strength(-10  )) //the default strength is -30
+        /*
+        .force("y", d3
+                      .forceY()
+                      //.strength(0.01)
+                      .y(height / 2)
+                      )
+        .force("x", d3
+                      .forceX()
+                      //.strength(0.01)
+                      .x(width / 2)
+                      )
+        */
+                    ;
+
+      simulation
+            .nodes(data)
+            .on("tick", ticked)
+            ;
+
+  var forceStrength = //1;
+                       0.05;
+
+
+      function groupBubbles() {
+
+        simulation
+               .force('x', d3
+                              .forceX()
+                              .strength(forceStrength)
+                              .x(width / 2))
+                .force('y', d3
+                              .forceY()
+                              .strength(forceStrength)
+                              .y(width / 2))
+                              ;
+        
+    simulation
+        .alpha(2)
+   //     .alphaDecay(0.1)
+        //.alphaTarget(0.1)
+        .restart()
+        ;
+
+        svg
+            .selectAll('text')
+              .data(data)
+              .enter()
+              .append('text')
+              .attr('x', function (d) { return bubble_position_x(d); })
+              .attr('y', function (d) { return bubble_position_y(d); })
+              .attr('text-anchor', 'middle')
+              //is there a way to vertically anchor the text?
+              .text(function (d) { return d[byVar];})
+              ;
+        
+      }
+
+groupBubbles();
+
+});
+
+d3.xml("graphics/pg_1_min.svg", function(error, xml) {
+        if (error) {console.log(error); return;}
+
+var svg_node = xml
+                .getElementsByTagName("svg")[0]
+                ;
+
+      svg
+          .node()
+          .appendChild(svg_node)
+          ;
+
+      d3
+        .select("svg#pg_number")
+        .attr("x", width - 60)
+        .attr('y', height - 15)
+        ;
+
+});
+
+
+}
+
+function sec_2(){  //who's won more
+
+      canvas_clear();
+
+      d3.csv("data/ind_pak_v2.csv", function(data){
+
+      svg
+    .append('text')
+    .attr('class','title')
+    .attr('y', 20)
+    .text("Who's won more matches?")
+    
+        .attr('x',width/2)
+    .attr('text-anchor', 'middle')
+    ;
+
+      data.forEach(function(d){
+        d.r = radius;
+        d.x = width / 2;
+        d.y = height / 2;
+      })
+      
+      console.table(data); 
+      
+var images = svg
+                .selectAll("image")
+                .data(data)
+                ;
+
+//idea for code below from http://bl.ocks.org/syntagmatic/4963194
+
+var imagesEnter = images
+              .enter()
+              .append("image")
+//              .attr("r", function(d, i){ return d.r; })
+              .attr("x", function(d, i){ return 175 + 25 * i + 2 * i ** 2; })
+              .attr("y", function(d, i){ return 250; })
+              .attr("xlink:href",  function(d) { return iconsx[d.winner];})
+              .attr("height", 20)
+              .attr("width", 20)  
+              ;
+
+    images = images
+                    .merge(imagesEnter)
+                    ;
+
+        images
+          .append("title")
+          .text(function(d, i) { 
+            if (d.winner != 'No result'){return "One-day match at " + d.ground + " (" + d.country + ") on " + d.date + ". " + d.winner + " won by " + d.margin + ".";}
+            else{return "One-day match at " + d.ground + " (" + d.country + ") on " + d.date + ". Match tied/cancelled." + ".";} 
+          });
+
+      function ticked() {
+                          images
+                              //.attr("x", function(d){ return d.x; })
+                              //.attr("y", function(d){ return d.y; })
+                              .attr("x", function(d){ return d.x = Math.max(d.r, Math.min(width - d.r, d.x)); })
+                              .attr("y", function(d){ return d.y = Math.max(d.r, Math.min(height - d.r, d.y)); })
+                              ;
+                        }
+                        ;
+
+
+  var simulation = d3
+                    .forceSimulation()
+        
+        .force("charge", d3
+                          .forceManyBody()
+                          .strength(-6)
+                          ) //the default strength is -30
+        
+/*  
+        //d.r is radius, defined on top as 5
+
+        .force("collide",d3
+                            .forceCollide( function(d){
+                                  return d.r + 0.5; })
+                            //.strength(0)
+                            .iterations(16)
+                            )
+          */
+                    ;
+
+      simulation
+            .nodes(data)
+            .on("tick", ticked)
+            ;
+
+//the code below for setting the foci from https://github.com/vlandham/bubble_chart_v4/blob/master/src/bubble_chart.js
+
+var bubble_foci = {
+    India: { x: width / 2, y: height / 3 },
+    Pakistan: { x: width / 3, y: 2*height / 3 },
+    'No result': { x: 2*width / 3, y: 2*height / 3 }
+  };
+
+  var forceStrength = //1;
+                       0.05;
+
+//byVar is just a variable 
+
+function splitBubbles(byVar) {
+
+    function bubble_position_x(d) {
+        return bubble_foci[d[byVar]].x;
+      }
+
+    function bubble_position_y(d) {
+        return bubble_foci[d[byVar]].y;
+      }
+
+simulation
+      .force('x', d3
+                    .forceX()
+                    .strength(forceStrength)
+                    .x(bubble_position_x)
+                    )
+      .force('y', d3
+                    .forceY()
+                    .strength(forceStrength)
+                    .y(bubble_position_y)
+                    )
+                  ;
+
+simulation.alpha(2).restart();  
+
+        svg
+            .selectAll('rect')
+            .data(data)
+            .enter()
+            .append('rect')
+            .attr("fill", "#ffda29")
+            .style("fill-opacity", 0.07)
+            .attr("width", 60)
+            .attr("height", 16)
+            .attr("rx",'5')
+            .attr("ry",'5')
+            .attr('x', function (d) { return bubble_position_x(d); })
+            .attr('y', function (d) { return bubble_position_y(d); })
+            ;
+
+        svg
+           .selectAll('text')
+              //.data(data, function(d){ return d[byVar];})
+              .data(data)
+              .enter()
+              .append('text')
+              .attr('x', function (d) { return bubble_position_x(d); })
+              .attr('y', function (d) { return bubble_position_y(d); })
+              .attr('text-anchor', 'start')
+              .attr('alignment-baseline',"hanging")
+              .text(function (d) { return d[byVar]; })
+              ;
+      }
+
+        splitBubbles('winner');
+
+});
+
+d3.xml("graphics/pg_2_min.svg", function(error, xml) {
+        if (error) {console.log(error); return;}
+
+var svg_node = xml
+                .getElementsByTagName("svg")[0]
+                ;
+
+      svg
+          .node()
+          .appendChild(svg_node)
+          ;
+
+      d3
+        .select("svg#pg_number")
+        .attr("x", width - 60)
+        .attr('y', height - 15)
+        ;
+
+});
+
+
+}
+
+function sec_3(){    //how has dominance changed over the decades
+
+      canvas_clear();
+
+d3.csv("data/ind_pak_v2.csv", function(data){
+
+   svg
+    .append('text')
+    .attr('class','title')
+    .attr('y', 20)
+    .text("Who's winning more now?")
+    .attr('x',width/2)
+    .attr('text-anchor', 'middle')
+    
+    ;
+
+      data.forEach(function(d){
+        d.r = radius;
+        d.x = width / 2;
+        d.y = height / 2;
+      })
+      
+      console.table(data); 
+      
+var images = svg
+                .selectAll("image")
+                .data(data)
+                ;
+
+//idea for code below from http://bl.ocks.org/syntagmatic/4963194
+
+var imagesEnter = images
+              .enter()
+              .append("image")
+//              .attr("r", function(d, i){ return d.r; })
+              .attr("x", function(d, i){ return 175 + 25 * i + 2 * i ** 2; })
+              .attr("y", function(d, i){ return 250; })
+              .attr("xlink:href",  function(d) { return iconsx[d.winner];})
+              .attr("height", 20)
+              .attr("width", 20)  
+              ;
+
+    images = images
+                    .merge(imagesEnter)
+                    ;
+
+    images
+          .append("title")
+          .text(function(d, i) { 
+            if (d.winner != 'No result'){return "One-day match at " + d.ground + " (" + d.country + ") on " + d.date + ". " + d.winner + " won by " + d.margin + ".";}
+            else{return "One-day match at " + d.ground + " (" + d.country + ") on " + d.date + ". Match tied/cancelled." + ".";} 
+          });
+
+
+      function ticked() {
+                          images
+//                              .attr("x", function(d){ return d.x; })
+ //                             .attr("y", function(d){ return d.y; })
+                                .attr("x", function(d){ return d.x = Math.max(d.r, Math.min(width - d.r, d.x)); })
+                                .attr("y", function(d){ return d.y = Math.max(d.r, Math.min(height - d.r, d.y)); })
+                              ;
+                        }
+                        ;
+
+
+  var simulation = d3
+                    .forceSimulation()
+        
+        .force("charge", d3
+                          .forceManyBody()
+                          .strength(-5)
+                          ) //the default strength is -30
+        /*  
+        //d.r is defined as radius above
+
+        .force("collide",d3
+                            .forceCollide( function(d){
+                                  return d.r + 0.5; })
+                            //.strength(0)
+                            .iterations(16)
+                            )
+          */
+                    ;
+
+      simulation
+            .nodes(data)
+            .on("tick", ticked)
+            ;
+/*
+var bubble_foci = {
+    '1970-1979': { x: width *3/8, y: height /4 },
+    '1980-1989': { x: width *5/ 8, y: height /4 },
+    '1990-1999': { x: width /2, y: height /2 },
+    '2000-2009': { x: width *3/8, y: height * 3/4 },
+    '2010-2017': { x: width * 5/8, y: height * 3/4 }
+}
+*/
+
+var bubble_foci = {
+    '1975-1979': { x: width *2/8, y: height *1/4 },
+    '1980-1984': { x: width *2/4, y: height *1/4 },
+    '1985-1989': { x: width *6/8, y: height *1/4 },
+    '1990-1994': { x: width *2/8, y: height *2/4 },
+    '1995-1999': { x: width *2/4, y: height *2/4 },
+    '2000-2004': { x: width *6/8, y: height *2/4 },
+    '2005-2009': { x: width *2/8, y: height *3/4 },
+    '2010-2014': { x: width *2/4, y: height *3/4 },    
+    '2015-2017': { x: width *6/8, y: height *3/4 }
+}
+
+
+  var forceStrength = //1;
+                       0.05;
+
+function splitBubbles(byVar) {
+
+    function bubble_position_x(d) {
+        return bubble_foci[d[byVar]].x;
+      }
+
+    function bubble_position_y(d) {
+        return bubble_foci[d[byVar]].y;
+      }
+
+    simulation
+      .force('x', d3
+                    .forceX()
+                    .strength(forceStrength)
+                    .x(bubble_position_x)
+                    )
+      .force('y', d3
+                    .forceY()
+                    .strength(forceStrength)
+                    .y(bubble_position_y)
+                    )
+                  ;
+
+
+    simulation.alpha(2).restart();  
+
+        svg
+            .selectAll('rect')
+            .data(data)
+            .enter()
+            .append('rect')
+            .attr("fill", "#ffda29")
+            .style("fill-opacity", 0.07)
+            .attr("width", 70)
+            .attr("height", 16)
+            .attr("rx",'5')
+            .attr("ry",'5')
+            .attr('x', function (d) { return bubble_position_x(d); })
+            .attr('y', function (d) { return bubble_position_y(d); })
+            ;
+
+        svg
+           .selectAll('text')
+              //.data(data, function(d){ return d[byVar];})
+              .data(data)
+              .enter()
+              .append('text')
+              .attr('x', function (d) { return bubble_position_x(d); })
+              .attr('y', function (d) { return bubble_position_y(d); })
+              .attr('text-anchor', 'start')
+              .attr('alignment-baseline',"hanging")
+              .text(function (d) { return d[byVar]; })
+              ;
+      }
+
+        splitBubbles('half_decade');
+
+});
+
+d3.xml("graphics/pg_3_min.svg", function(error, xml) {
+        if (error) {console.log(error); return;}
+
+var svg_node = xml
+                .getElementsByTagName("svg")[0]
+                ;
+
+      svg
+          .node()
+          .appendChild(svg_node)
+          ;
+
+      d3
+        .select("svg#pg_number")
+        .attr("x", width - 60)
+        .attr('y', height - 15)
+        ;
+
+});
+
+
+}
+
+
+function sec_4(){   //where have they played each other?
+
+      canvas_clear();
+
+d3.csv("data/ind_pak_v2.csv", function(data){
+
+   svg
+    .append('text')
+    .attr('class','title')
+    .attr('y', 20)
+    .text("Where have they played each other?")
+    
+        .attr('x',width/2)
+    .attr('text-anchor', 'middle')
+
+    ;
+
+
+      data.forEach(function(d){
+        d.r = radius;
+        d.x = width / 2;
+        d.y = height / 2;
+      })
+      
+      console.table(data); 
+      
+var images = svg
+                .selectAll("image")
+                .data(data)
+                ;
+
+//idea for code below from http://bl.ocks.org/syntagmatic/4963194
+
+var imagesEnter = images
+              .enter()
+              .append("image")
+//              .attr("r", function(d, i){ return d.r; })
+              .attr("x", function(d, i){ return 175 + 25 * i + 2 * i ** 2; })
+              .attr("y", function(d, i){ return 250; })
+              .attr("xlink:href",  function(d) { return iconsx[d.winner];})
+              .attr("height", 20)
+              .attr("width", 20)  
+              ;
+
+    images = images
+                    .merge(imagesEnter)
+                    ;
+
+    images
+          .append("title")
+          .text(function(d, i) { 
+            if (d.winner != 'No result'){return "One-day match at " + d.ground + " (" + d.country + ") on " + d.date + ". " + d.winner + " won by " + d.margin + ".";}
+            else{return "One-day match at " + d.ground + " (" + d.country + ") on " + d.date + ". Match tied/cancelled." + ".";} 
+          });
+
+
+      function ticked() {
+
+                          images
+                                //.attr("x", function(d){ return d.x; })
+                                //.attr("y", function(d){ return d.y; })
+                                .attr("x", function(d){ return d.x = Math.max(d.r, Math.min(width - d.r, d.x)); })
+                                .attr("y", function(d){ return d.y = Math.max(d.r, Math.min(height - d.r, d.y)); })
+                              ;
+                        }
+                        ;
+
+  var simulation = d3
+                    .forceSimulation()
+        
+        .force("charge", d3
+                          .forceManyBody()
+                          .strength(-6)
+                          ) //the default strength is -30
+        /*  
+        //d.r is defined as radius above
+
+        .force("collide",d3
+                            .forceCollide( function(d){
+                                  return d.r + 0.5; })
+                            //.strength(0)
+                            .iterations(16)
+                            )
+          */
+          ;
+
+      simulation
+            .nodes(data)
+            .on("tick", ticked)
+            ;
+
+
+//in these cases the clusters don't have to be in order
+//it would be better to let the cluster foci be automatically generated
+// and not be manually assigned like I did below
+
+var bubble_foci = {
+    India:                  { x: width * 1/ 3, y: height * 3/12 },
+    Pakistan:               { x: width * 2/3, y: height * 3/12 },    
+    UAE:                    { x: width * 1/3, y: height * 5/12 },
+    Canada:                 { x: width * 2/3, y: height * 5/12 },
+    "B'desh":             { x: width * 1/9, y: height * 8/12 },
+    Australia:              { x: width * 3/9, y: height * 8/12 },
+    'S. Lanka':            { x: width * 5/9, y: height * 8/12 },
+    USA:                    { x: width * 7/9, y: height * 8/12 },
+    UK:                     { x: width * 1/9, y: height * 10/12 },
+    'S. Africa':         { x: width * 3/9, y: height * 10/12 },
+    "N'lands":            { x: width * 5/9, y: height * 10/12 },
+    "S'pore":              { x: width * 7/9, y: height * 10/12 }
+}
+
+  var forceStrength = //1;
+                       0.05;
+
+ function splitBubbles(byVar) {
+
+    function bubble_position_x(d) {
+        return bubble_foci[d[byVar]].x;
+      }
+
+    function bubble_position_y(d) {
+        return bubble_foci[d[byVar]].y;
+      }
+
+    simulation
+      .force('x', d3
+                    .forceX()
+                    .strength(forceStrength)
+                    .x(bubble_position_x)
+                    )
+      .force('y', d3
+                    .forceY()
+                    .strength(forceStrength)
+                    .y(bubble_position_y)
+                    )
+                  ;
+
+    simulation.alpha(2).restart();  
+
+        svg
+            .selectAll('rect')
+            .data(data)
+            .enter()
+            .append('rect')
+            .attr("fill", "#ffda29")
+            .style("fill-opacity", 0.07)
+            .attr("width", 60)
+            .attr("height", 16)
+            .attr("rx",'5')
+            .attr("ry",'5')
+            .attr('x', function (d) { return bubble_position_x(d); })
+            .attr('y', function (d) { return bubble_position_y(d); })
+            ;
+
+        svg
+           .selectAll('text')
+              //.data(data, function(d){ return d[byVar];})
+              .data(data)
+              .enter()
+              .append('text')
+              .attr('x', function (d) { return bubble_position_x(d); })
+              .attr('y', function (d) { return bubble_position_y(d); })
+              .attr('text-anchor', 'start')
+              .attr('alignment-baseline',"hanging")
+              .text(function (d) { return d[byVar]; })
+              ;
+
+               
+      }
+
+        splitBubbles('country');
+
+
+});    
+
+d3.xml("graphics/pg_4_min.svg", function(error, xml) {
+        if (error) {console.log(error); return;}
+
+var svg_node = xml
+                .getElementsByTagName("svg")[0]
+                ;
+
+      svg
+          .node()
+          .appendChild(svg_node)
+          ;
+
+      d3
+        .select("svg#pg_number")
+        .attr("x", width - 60)
+        .attr('y', height - 15)
+        ;
+
+});
+
+
+}
+
+
+
+function sec_5(){  //team first action, did team batting first win or lose?
+
+      canvas_clear();
+
+//different csv here, removed matches where there was no 
+//result, was messing with the viz. Next time, figure out
+//how to exclude rows you don't need through the code itself
+
+d3.csv("data/ind_pak_v2_bat_first_winner.csv", function(data){
+
+   svg
+    .append('text')
+    .attr('class','title')
+    .attr('y', 20)
+    .text("Should a team bat first or bowl?")
+    
+        .attr('x',width/2)
+    .attr('text-anchor', 'middle')
+
+    ;
+
+
+      data.forEach(function(d){
+        d.r = radius;
+        d.x = width / 2;
+        d.y = height / 2;
+      })
+      
+      console.table(data); 
+      
+var images = svg
+                .selectAll("image")
+                .data(data)
+                ;
+
+//idea for code below from http://bl.ocks.org/syntagmatic/4963194
+
+var imagesEnter = images
+                    .enter()
+                    .append("image")
+          //              .attr("r", function(d, i){ return d.r; })
+                    .attr("x", function(d, i){ return 175 + 25 * i + 2 * i ** 2; })
+                    .attr("y", function(d, i){ return 250; })
+                    .attr("xlink:href",  function(d) { return iconsx[d.winner];})
+                    .attr("height", 20)
+                    .attr("width", 20)  
+                    ;
+
+    images = images
+                    .merge(imagesEnter)
+                    ;
+
+        images
+          .append("title")
+          .text(function(d, i) { 
+            if (d.winner != 'No result'){return "One-day match at " + d.ground + " (" + d.country + ") on " + d.date + ". " + d.winner + " won by " + d.margin + ".";}
+            else{return "One-day match at " + d.ground + " (" + d.country + ") on " + d.date + ". Match tied/cancelled." + ".";} 
+          });
+
+      function ticked() {
+                          images
+                              //.attr("x", function(d){ return d.x; })
+                              //.attr("y", function(d){ return d.y; })
+                              .attr("x", function(d){ return d.x = Math.max(d.r, Math.min(width - d.r, d.x)); })
+                                .attr("y", function(d){ return d.y = Math.max(d.r, Math.min(height - d.r, d.y)); })
+                              ;
+                        }
+                        ;
+
+
+  var simulation = d3
+                    .forceSimulation()
+        
+        .force("charge", d3
+                          .forceManyBody()
+                          .strength(-6)
+                          ) //the default strength is -30
+        /*  
+        //d.r is defined as radius above
+
+        .force("collide",d3
+                            .forceCollide( function(d){
+                                  return d.r + 0.5; })
+                            //.strength(0)
+                            .iterations(16)
+                            )
+          */
+                    ;
+
+      simulation
+            .nodes(data)
+            .on("tick", ticked)
+            ;
+
+
+var bubble_foci = {
+    'Matches won batting first': { x: width /2, y: height / 3 },
+    'Matches won bowling first': { x: width /2, y: height * 2/ 3 }    
+    }
+
+  var forceStrength = //1;
+                       0.05;
+
+function splitBubbles(byVar) {
+
+    function bubble_position_x(d) {
+        return bubble_foci[d[byVar]].x;
+      }
+
+    function bubble_position_y(d) {
+        return bubble_foci[d[byVar]].y;
+      }
+
+    simulation
+      .force('x', d3
+                    .forceX()
+                    .strength(forceStrength)
+                    .x(bubble_position_x)
+                    )
+      .force('y', d3
+                    .forceY()
+                    .strength(forceStrength)
+                    .y(bubble_position_y)
+                    )
+                  ;
+
+
+    simulation.alpha(2).restart();  
+
+
+        svg
+            .selectAll('rect')
+            .data(data)
+            .enter()
+            .append('rect')
+            .attr("fill", "#ffda29")
+            .style("fill-opacity", 0.07)
+            .attr("width", 120)
+            .attr("height", 16)
+            .attr("rx",'5')
+            .attr("ry",'5')
+            .attr('x', function (d) { return bubble_position_x(d); })
+            .attr('y', function (d) { return bubble_position_y(d); })
+            ;
+
+        svg
+           .selectAll('text')
+              //.data(data, function(d){ return d[byVar];})
+              .data(data)
+              .enter()
+              .append('text')
+              .attr('x', function (d) { return bubble_position_x(d); })
+              .attr('y', function (d) { return bubble_position_y(d); })
+              .attr('text-anchor', 'start')
+              .attr('alignment-baseline',"hanging")
+              .text(function (d) { return d[byVar]; })
+              ;
+              
+      }
+
+        splitBubbles('bat_first_winner');
+
+
+});    
+
+d3.xml("graphics/pg_5_min.svg", function(error, xml) {
+        if (error) {console.log(error); return;}
+
+var svg_node = xml
+                .getElementsByTagName("svg")[0]
+                ;
+
+      svg
+          .node()
+          .appendChild(svg_node)
+          ;
+
+      d3
+        .select("svg#pg_number")
+        .attr("x", width - 60)
+        .attr('y', height - 15)
+        ;
+
+});
+
+
+}
+
+
+function sec_6(){    //categorising or 'binning' the victory margins
+                      //find how close Ind-Pak matches have been
+   
+
+      canvas_clear();
+
+d3.csv("data/ind_pak_v2_margin_bin.csv", function(data){
+
+   svg
+    .append('text')
+    .attr('class','title')
+    .attr('y', 20)
+    .text("How close have the matches been?")
+    
+        .attr('x',width/2)
+    .attr('text-anchor', 'middle')
+
+    ;
+
+      data.forEach(function(d){
+        d.r = radius;
+        d.x = width / 2;
+        d.y = height / 2;
+      })
+      
+      console.table(data); 
+      
+var images = svg
+                .selectAll("image")
+                .data(data)
+                ;
+
+//idea for code below from http://bl.ocks.org/syntagmatic/4963194
+
+var imagesEnter = images
+                    .enter()
+                    .append("image")
+          //              .attr("r", function(d, i){ return d.r; })
+                    .attr("x", function(d, i){ return 175 + 25 * i + 2 * i ** 2; })
+                    .attr("y", function(d, i){ return 250; })
+                    .attr("xlink:href",  function(d) { return iconsx[d.winner];})
+                    .attr("height", 20)
+                    .attr("width", 20)  
+                    ;
+
+    images = images
+                    .merge(imagesEnter)
+                    ;
+
+    images
+          .append("title")
+          .text(function(d, i) { 
+            if (d.winner != 'No result'){return "One-day match at " + d.ground + " (" + d.country + ") on " + d.date + ". " + d.winner + " won by " + d.margin + ".";}
+            else{return "One-day match at " + d.ground + " (" + d.country + ") on " + d.date + ". Match tied/cancelled." + ".";} 
+          });
+
+      function ticked() {
+                          images
+//                              .attr("x", function(d){ return d.x; })
+  //                            .attr("y", function(d){ return d.y; })
+                                 .attr("x", function(d){ return d.x = Math.max(d.r, Math.min(width - d.r, d.x)); })
+                                .attr("y", function(d){ return d.y = Math.max(d.r, Math.min(height - d.r, d.y)); })
+                              ;
+                        }
+                        ;
+
+
+  var simulation = d3
+                    .forceSimulation()
+        
+        .force("charge", d3
+                          .forceManyBody()
+                          .strength(-6)
+                          ) //the default strength is -30
+        /*  
+        //d.r is defined as radius above
+
+        .force("collide",d3
+                            .forceCollide( function(d){
+                                  return d.r + 0.5; })
+                            //.strength(0)
+                            .iterations(16)
+                            )
+          */
+                    ;
+
+      simulation
+            .nodes(data)
+            .on("tick", ticked)
+            ;
+
+//in these cases the clusters don't have to be in order
+//it would be better to let the cluster foci be generated and not manually determined
+
+var bubble_foci = {
+    '1-3 wickets': { x: width * 3/8, y: height *2/8 },
+    '4-6 wickets': { x: width * 5/8, y: height *2/8 },
+    '7-9 wickets': { x: width /2, y: height * 3/8 },
+    '1-50 runs': { x: width /2, y: height * 4/8 },
+    '51-100 runs': { x: width * 3/8, y: height * 6/8 },
+    '101-160 runs': { x: width * 5/8, y: height * 6/8 }
+    }
+
+  var forceStrength = //1;
+                       0.05;
+
+function splitBubbles(byVar) {
+
+    function bubble_position_x(d) {
+        return bubble_foci[d[byVar]].x;
+      }
+
+    function bubble_position_y(d) {
+        return bubble_foci[d[byVar]].y;
+      }
+
+    simulation
+      .force('x', d3
+                    .forceX()
+                    .strength(forceStrength)
+                    .x(bubble_position_x)
+                    )
+      .force('y', d3
+                    .forceY()
+                    .strength(forceStrength)
+                    .y(bubble_position_y)
+                    )
+                  ;
+
+
+    simulation.alpha(2).restart();  
+
+
+        svg
+            .selectAll('rect')
+            .data(data)
+            .enter()
+            .append('rect')
+            .attr("fill", "#ffda29")
+            .style("fill-opacity", 0.07)
+            .attr("width", 70)
+            .attr("height", 16)
+            .attr("rx",'5')
+            .attr("ry",'5')
+            .attr('x', function (d) { return bubble_position_x(d); })
+            .attr('y', function (d) { return bubble_position_y(d); })
+            ;
+
+        svg
+           .selectAll('text')
+              //.data(data, function(d){ return d[byVar];})
+              .data(data)
+              .enter()
+              .append('text')
+              .attr('x', function (d) { return bubble_position_x(d); })
+              .attr('y', function (d) { return bubble_position_y(d); })
+              .attr('text-anchor', 'start')
+              .attr('alignment-baseline',"hanging")
+              .text(function (d) { return d[byVar]; })
+              ;
+              
+      }
+
+        splitBubbles('margin_bin');
+
+});    
+
+d3.xml("graphics/pg_6_min.svg", function(error, xml) {
+        if (error) {console.log(error); return;}
+
+var svg_node = xml
+                .getElementsByTagName("svg")[0]
+                ;
+
+      svg
+          .node()
+          .appendChild(svg_node)
+          ;
+
+      d3
+        .select("svg#pg_number")
+        .attr("x", width - 60)
+        .attr('y', height - 15)
+        ;
+
+});
+
+
+}
+
+
+
+  var gs = d3.graphScroll()
+      .container(d3.select('#container'))
+      .graph(d3.selectAll('#graph'))
+      .sections(d3.selectAll('#sections > div'))
+      // .offset(innerWidth < 900 ? innerHeight - 30 : 200)
+      .eventId('uniqueId1')
+      .on('active', function(i){  
+              
+              [ 
+                sec_1,
+                sec_2,
+                sec_3,
+                sec_4,
+                sec_5,
+                sec_6
+                       ][i]();
+
+})
+
+//the brace above is completed by the brace appearing before the list of function names
+
+}
+//this is the brace that closes the render function
+
+render()
+d3.select(window).on('resize', render)
+
+</script>
+
+</body>
+
+</html>
