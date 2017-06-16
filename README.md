@@ -1,6 +1,4 @@
-This is the code and data for a cricket interactive to be published on [wionews.com](http://www.wionews.com).
-
-This interactive visualises the history of India-Pakistan one-day matches.
+This is the code and data for a cricket interactive visualising the history of India-Pakistan one-day matches. You can see it [here](https://shijithpk.github.io/history_of_india_pakistan_cricket_matches/).
 
 Used a modified version of Adam Pearce's [Graph-Scroll.js library](1wheel.github.io/graph-scroll/) to make this interactive. 
 
